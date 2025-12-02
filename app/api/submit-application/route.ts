@@ -3,14 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getFirestore, Timestamp } from "firebase-admin/firestore";
 import { initializeApp, getApps, cert } from "firebase-admin/app";
-import rateLimit from "@/lib/rateLimit";
 import { z } from "zod";
-
-// Rate limiter: max 5 requests per IP + email per minute
-const limiter = rateLimit({
-  interval: 60 * 1000,
-  uniqueTokenPerInterval: 500,
-});
 
 // Initialize Firebase Admin SDK
 const initializeFirebaseAdmin = () => {
@@ -36,7 +29,9 @@ const initializeFirebaseAdmin = () => {
 const db = initializeFirebaseAdmin();
 
 const noBracketsRegex = /^[^()\[\]{}]*$/;
+
 // Zod schema for validation
+// REMOVED: recaptchaToken field validation
 const applicationSchema = z.object({
   fullName: z.string().min(2),
   email: z.string().email(),
@@ -57,7 +52,6 @@ const applicationSchema = z.object({
     .string()
     .regex(noBracketsRegex, "Brackets are not allowed")
     .optional(),
-  recaptchaToken: z.string().min(1),
 });
 
 export async function POST(request: Request) {
@@ -69,7 +63,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    // Get session (app directory)
+    // Get session
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user?.email) {
@@ -80,21 +74,12 @@ export async function POST(request: Request) {
 
     const userEmail = session.user.email;
 
-    // Rate limiting by IP + user email
-    const ip =
-      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      "127.0.0.1";
-    const limiterKey = `${ip}:${userEmail}`;
-    try {
-      await limiter.check(limiterKey, 5);
-    } catch {
-      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
-    }
+    // REMOVED: Rate limiting check
 
     // Parse request body
     const body = await request.json();
 
-    // ✅ Zod validation
+    // Validate data (without Recaptcha)
     const parsed = applicationSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
@@ -103,27 +88,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const { recaptchaToken, ...formData } = parsed.data;
+    // Direct data assignment
+    const formData = parsed.data;
 
-    // Verify reCAPTCHA
-    const secret = process.env.RECAPTCHA_SECRET_KEY;
-    const verifyRes = await fetch(
-      "https://www.google.com/recaptcha/api/siteverify",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `secret=${secret}&response=${recaptchaToken}`,
-      }
-    );
-    const verifyData = await verifyRes.json();
-    if (!verifyData.success || verifyData.score < 0.5) {
-      return NextResponse.json(
-        { error: "reCAPTCHA verification failed" },
-        { status: 400 }
-      );
-    }
+    // REMOVED: Google reCAPTCHA Verification Fetch
 
-    // Firestore submission check
+    // Firestore submission check (Prevent duplicates)
     const submissionRef = db.collection("submissions").doc(userEmail);
     const existingSubmission = await submissionRef.get();
     if (existingSubmission.exists) {
