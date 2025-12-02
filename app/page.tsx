@@ -149,7 +149,7 @@ const HiringTimeline = () => {
         { date: 'Dec 2, 2025', title: 'Applications Open', description: 'The hiring portal goes live. Submit your applications to join the team.' },
         { date: 'Dec 22, 2025', title: 'Applications Close', description: 'Last day to submit your application. Don\'t miss out!' },
         { date: 'Dec 25-27, 2025', title: 'Interview Rounds', description: 'Shortlisted candidates will be contacted for interviews.' },
-        { date: 'Dec 30, 2025', title: 'Results Announced', description: 'Welcome to the new members of the MLSA MIET Chapter!' },
+        { date: 'Dec 30, 2025', title: 'Results Announced', description: 'Welcome to the new members of the Campus Core Chapter!' },
     ];
 
     return (
@@ -189,7 +189,7 @@ const HiringTimeline = () => {
 // .......... LANDING PAGE ............
 const LandingPage: NextPage = () => {
     useEffect(() => {
-        document.title = 'MLSA MIET Chapter';
+        document.title = 'Campus Core MIET Chapter';
     }, []);
 
     return (
