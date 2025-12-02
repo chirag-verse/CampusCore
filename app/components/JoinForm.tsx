@@ -5,17 +5,6 @@ import { useSession, signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-declare global {
-  interface Window {
-    grecaptcha?: {
-      execute: (
-        siteKey: string,
-        options: { action: string }
-      ) => Promise<string>;
-    };
-  }
-}
-
 // Define the structure of form data and errors for better type safety
 type FormData = {
   fullName: string;
@@ -31,7 +20,6 @@ type FormData = {
 };
 
 type FormErrors = Partial<Record<keyof FormData, string>>;
-
 
 export default function JoinForm() {
   const { data: session, status } = useSession();
@@ -159,18 +147,11 @@ export default function JoinForm() {
     setErrors({});
 
     try {
-      // Get reCAPTCHA token
-      const token = await window.grecaptcha?.execute(
-        process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!,
-        { action: "submit" }
-      );
-
-      if (!token) throw new Error("reCAPTCHA token not available");
-
+      // DIRECT SUBMISSION (No reCAPTCHA check)
       const response = await fetch("/api/submit-application", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, recaptchaToken: token }),
+        body: JSON.stringify({ ...formData }), // Sending data without token
       });
 
       if (!response.ok) {
@@ -375,7 +356,6 @@ export default function JoinForm() {
             </div>
         </div>
         
-        {/* ... Rest of your form fields ... */}
         {/* Motivation Textarea */}
         <div>
             <label htmlFor="motivation" className="block text-sm font-medium text-slate-300 mb-2">
@@ -388,12 +368,11 @@ export default function JoinForm() {
                 value={formData.motivation}
                 onChange={handleChange}
                 required
-                // MODIFIED: Added conditional styling for the border
                 className={`w-full bg-slate-900/50 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none ${errors.motivation ? 'border-red-500' : 'border-slate-700'}`}
             ></textarea>
             {errors.motivation && <p className="text-red-500 text-sm mt-1">{errors.motivation}</p>}
         </div>
-  {/* Contribution Textarea */}
+        {/* Contribution Textarea */}
         <div>
             <label htmlFor="contribution" className="block text-sm font-medium text-slate-300 mb-2">
                 9. In what ways do you see yourself contributing...?
@@ -405,11 +384,9 @@ export default function JoinForm() {
                 value={formData.contribution}
                 onChange={handleChange}
                 required
-                // MODIFIED: Added conditional styling for the border
                 className={`w-full bg-slate-900/50 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none ${errors.contribution ? 'border-red-500' : 'border-slate-700'}`}
             ></textarea>
 
-            {/* ADD THIS LINE: To display the error message */}
             {errors.contribution && <p className="text-red-500 text-sm mt-1">{errors.contribution}</p>}
         </div>
 

@@ -25,7 +25,7 @@ const JoinPage: NextPage = () => {
           <nav className="flex justify-between items-center max-w-7xl mx-auto">
             <Link href="/" className="flex items-center space-x-3 cursor-pointer">
               <MLSALogo />
-              <span className="font-bold text-xl tracking-wide">MLSA MIET</span>
+              <span className="font-bold text-xl tracking-wide">Campus Core</span>
             </Link>
           </nav>
         </header>
