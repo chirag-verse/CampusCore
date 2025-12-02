@@ -14,6 +14,7 @@ const MLSALogo = () => (
 );
 
 const JoinPage: NextPage = () => {
+  const isRegistrationOpen = true;
   return (
     <div className="bg-slate-900 text-white min-h-screen font-sans antialiased">
       {/* This page has a simple background to ensure it loads fast after login */}
@@ -31,8 +32,12 @@ const JoinPage: NextPage = () => {
     
         <main className="flex-grow flex items-center justify-center py-12 px-4">
             <div className="max-w-4xl w-full mx-auto bg-slate-800/40 backdrop-blur-sm border border-slate-700 rounded-2xl p-8 md:p-12">
-                {/* All the complex logic is inside this component */}
-                <RegistrationsClosed />
+                {/* LOGIC SWITCHED HERE */}
+                {isRegistrationOpen ? (
+                    <JoinForm />
+                ) : (
+                    <RegistrationsClosed />
+                )}
             </div>
         </main>
       </div>
