@@ -30,7 +30,7 @@ const upcoming: Event[] = [
     date: "September 3, 2025",
     time: "19 days",
     location: "Online",
-    description: "Register now to begin your journey and join the MLSA MIET team as a volunteer.",
+    description: "Register now to begin your journey and join the Campus Core team as a volunteer.",
     link: "/join",
     registrationType: 'signin', 
   },

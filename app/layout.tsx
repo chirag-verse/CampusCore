@@ -7,7 +7,7 @@ import { Analytics } from "@vercel/analytics/next"
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MLSA MIET Chapter",
+  title: "Campus Core Chapter 2k25",
   description: "Official website for the Microsoft Learn Student Ambassadors community at MIET.",
 };
 
