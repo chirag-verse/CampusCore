@@ -24,7 +24,7 @@ const Navbar = () => {
                     <Link href="/team" className={`transition-colors duration-300 ${pathname === '/team' ? 'text-blue-400' : 'hover:text-blue-400'}`}>TEAM</Link>
                     <Link href="/events" className={`transition-colors duration-300 ${pathname === '/events' ? 'text-blue-400' : 'hover:text-blue-400'}`}>EVENTS</Link>
                     <Link href="/about" className={`transition-colors duration-300 ${pathname === '/about' ? 'text-blue-400' : 'hover:text-blue-400'}`}>ABOUT US</Link>
-                    <Link href="/connect" className={`transition-colors duration-300 ${pathname === '/connect' ? 'text-blue-400' : 'hover:text-blue-400'}`}>CONNECT WITH US</Link>
+                    <Link href="/connect" className={`transition-colors duration-300 ${pathname === '/connect' ? 'text-blue-400' : 'hover:text-blue-400'}`}>QR Generator</Link>
                     </div>
                     <div className="hidden md:block">
                         <SignInButton />
